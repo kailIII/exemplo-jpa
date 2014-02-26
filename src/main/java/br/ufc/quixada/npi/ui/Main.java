@@ -1,4 +1,4 @@
-package br.ufc.quixada.npi;
+package br.ufc.quixada.npi.ui;
 
 import java.util.List;
 
@@ -16,20 +16,23 @@ public class Main {
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		try {
-			tx.begin();
-			em.persist(new Contato("João", "(88)3452-4567"));
-			em.persist(new Contato("Maria", "(88)3452-4568"));
-			em.persist(new Contato("José", "(88)3452-4569"));
-			tx.commit();
+			try {
+				tx.begin();
+				em.persist(new Contato("João", "(88)3452-4567"));
+				em.persist(new Contato("Maria", "(88)3452-4568"));
+				em.persist(new Contato("José", "(88)3452-4569"));
+				tx.commit();
+			} catch (Exception e) {
+				tx.rollback();
+				System.out.println("Não foi possível realizar a inserção");
+			}
 
 		    List<Contato> l = em.createQuery("from Contato", Contato.class).getResultList();
 
 		    for (Contato c : l) {
 		    	System.out.println(c);
 		    }
-			
 		} catch (Exception e) {
-			tx.rollback();
 			e.printStackTrace();
 		} finally {
 			em.close();
